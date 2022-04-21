@@ -68,6 +68,7 @@ class _admin_cancelledState extends State<admin_cancelled> {
   @override
   Widget build(BuildContext context) {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final DateFormat timeFormatter = DateFormat('hh:mm a');
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -125,7 +126,7 @@ class _admin_cancelledState extends State<admin_cancelled> {
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           width: double.infinity,
-                          height: 250,
+                          height: 325,
                           // color: Colors.grey,
 
                           child: Column(
@@ -174,7 +175,7 @@ class _admin_cancelledState extends State<admin_cancelled> {
                               Padding(
                                 padding: EdgeInsets.all(8),
                                 child: Text(
-                                  'Booking Time : ${appointmentList[index].bookingTime} ${appointmentList[index].bookingTime! < 12 ? 'AM' : 'PM'}',
+                                  'Booking Time : ${timeFormatter.format(appointmentList[index].bookingTime!.toDate())}',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 20,
@@ -214,8 +215,9 @@ class _admin_cancelledState extends State<admin_cancelled> {
                     },
                   )
                 : const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                    child: Text(
+                        'No Pending Appointments') //CircularProgressIndicator(),
+                    ),
           ),
         ),
       ),
