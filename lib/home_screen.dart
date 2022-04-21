@@ -136,8 +136,8 @@ class _homeScreenState extends State<homeScreen> {
                           color: Colors.cyan.shade400
                             ),
                         child: Container(
-                          height: 150,
-                          width: 150,
+                          height: 140,
+                          width: 134,
                           color: Colors.transparent,
                           margin: EdgeInsets.all(8.0),
                           child: RaisedButton(
@@ -146,7 +146,7 @@ class _homeScreenState extends State<homeScreen> {
                             },
                             color: Colors.transparent,
                             child: Text(
-                              'Edit/Modify Appointment',
+                              'Edit/Modify Booking',
                               style: TextStyle(
                                 color: Colors.yellow.shade200,
                                 fontStyle: FontStyle.italic,
@@ -156,26 +156,29 @@ class _homeScreenState extends State<homeScreen> {
                           ),
                         ),
                       ),
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30.0),
-                            color: Colors.indigo.shade400),
-                        child: Container(
-                          height: 150,
-                          width: 150,
-                          margin: EdgeInsets.all(8.0),
-                          color: Colors.transparent,
-                          child: RaisedButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/hospitals_screen');
-                            },
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30.0),
+                              color: Colors.indigo.shade400),
+                          child: Container(
+                            height: 140,
+                            width: 134,
+                            margin: EdgeInsets.all(8.0),
                             color: Colors.transparent,
-                            child: Text(
-                              'Book new Appointment',
-                              style: TextStyle(
-                                color: Colors.yellow.shade200,
-                                fontStyle: FontStyle.italic,
-                                fontSize: 20,
+                            child: RaisedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/hospitals_screen');
+                              },
+                              color: Colors.transparent,
+                              child: Text(
+                                'Book new Slot',
+                                style: TextStyle(
+                                  color: Colors.yellow.shade200,
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 20,
+                                ),
                               ),
                             ),
                           ),
@@ -184,30 +187,3 @@ class _homeScreenState extends State<homeScreen> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('For any queries'),
-                      TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            'Contact us',
-                            style: TextStyle(
-                              fontSize: 22,
-                              color: Colors.lightBlueAccent,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ))
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
