@@ -130,6 +130,30 @@ class _admin_home_screenState extends State<admin_home_screen> {
                     ),
                   ),
                 ),
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0,right: 10.0,top: 50.0,bottom: 10),
+                  child: FlatButton(
+                    onPressed: (){
+                      Navigator.pushNamed(context, '/display_feedback');
+                    },
+                    child: Container(
+                      height: 150,
+                      width: 380,
+                      color: Colors.yellow.shade300,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text('Display Feedbacks',
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                fontSize: 30
+                            ),),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
