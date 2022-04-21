@@ -187,3 +187,31 @@ class _homeScreenState extends State<homeScreen> {
                     ],
                   ),
                 ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Text('For any queries'),
+                //       TextButton(
+                //           onPressed: () {},
+                //           child: Text(
+                //             'Contact us',
+                //             style: TextStyle(
+                //               fontSize: 22,
+                //               color: Colors.lightBlueAccent,
+                //               fontStyle: FontStyle.italic,
+                //             ),
+                //           ))
+                //     ],
+                //   ),
+                // )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
