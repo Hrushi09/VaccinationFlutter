@@ -1,0 +1,12 @@
+
+class FeedbackEntity {
+  String? firstName;
+  String? message;
+  String? docId;
+
+  FeedbackEntity({
+    this.message,
+    this.firstName,
+    this.docId,
+  });
+}
