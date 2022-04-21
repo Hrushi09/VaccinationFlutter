@@ -72,6 +72,7 @@ class _modify_bookingState extends State<modify_booking> {
   @override
   Widget build(BuildContext context) {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final DateFormat timeFormatter = DateFormat('hh-mm a');
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -129,7 +130,7 @@ class _modify_bookingState extends State<modify_booking> {
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           width: double.infinity,
-                          height: 320,
+                          height: 315,
                           // color: Colors.grey,
 
                           child: Column(
@@ -178,7 +179,7 @@ class _modify_bookingState extends State<modify_booking> {
                               Padding(
                                 padding: EdgeInsets.all(8),
                                 child: Text(
-                                  'Booking Time : ${appointmentList[index].bookingTime} ${appointmentList[index].bookingTime! < 12 ? 'AM' : 'PM'}',
+                                  'Booking Time : ${timeFormatter.format(appointmentList[index].bookingTime!.toDate())}',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 20,
@@ -216,7 +217,7 @@ class _modify_bookingState extends State<modify_booking> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(
-                                        160.0, 10.0, 8.0, 10),
+                                        130.0, 10.0, 8.0, 10),
                                     child: RaisedButton(
                                       onPressed: () {
                                         _deleteAppointment(
