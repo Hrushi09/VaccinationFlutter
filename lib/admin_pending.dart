@@ -2,25 +2,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:vaccine_booking/hospitals/appointment_entity.dart';
+import 'package:vaccine_booking/hospitals/feedback_entity.dart';
 
 import 'login.dart';
 
 class admin_pending extends StatefulWidget {
-  const admin_pending({Key? key}) : super(key: key);
+
 
   @override
   _admin_pendingState createState() => _admin_pendingState();
 }
 
 class _admin_pendingState extends State<admin_pending> {
+  final auth = FirebaseAuth.instance;
   List<AppointmentEntity> appointmentList = [];
 
   @override
   void initState() {
     _displayBooking();
     super.initState();
+
   }
 
   _displayBooking() async {
@@ -29,6 +34,10 @@ class _admin_pendingState extends State<admin_pending> {
           .collection("bookings")
           .where("isAccept", isEqualTo: false)
           .where("isCancelled", isEqualTo: false);
+      FirebaseFirestore.instance.collection("bookings").get().then((value)
+      {
+        String email = value.docs[0].get("email");
+      });
 
       final result = await mainQuery.get();
       List<AppointmentEntity> list = [];
@@ -43,6 +52,7 @@ class _admin_pendingState extends State<admin_pending> {
           entity.bookingTime = snapshot['bookingtime'];
           entity.firstName = snapshot['firstname'];
           entity.lastName = snapshot['lastname'];
+          entity.email = snapshot['email'];
           entity.gender = snapshot['gender'];
           entity.hospitalImage = snapshot['image'];
           entity.latitude = snapshot['hospital_latlng'].latitude;
@@ -68,6 +78,7 @@ class _admin_pendingState extends State<admin_pending> {
   @override
   Widget build(BuildContext context) {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final DateFormat timeFormatter = DateFormat('hh-mm a');
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -172,7 +183,7 @@ class _admin_pendingState extends State<admin_pending> {
                               Padding(
                                 padding: EdgeInsets.all(8),
                                 child: Text(
-                                  'Booking Time : ${appointmentList[index].bookingTime} ${appointmentList[index].bookingTime! < 12 ? 'AM' : 'PM'}',
+                                  'Booking Time : ${timeFormatter.format(appointmentList[index].bookingTime!.toDate())}',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 20,
@@ -187,6 +198,10 @@ class _admin_pendingState extends State<admin_pending> {
                                       onPressed: () {
                                         _acceptAppointment(
                                             appointmentList[index]);
+                                        String? email =
+                                            appointmentList[index].email;
+                                        print(email);
+                                        sendNotification(email);
                                       },
                                       padding: const EdgeInsets.all(10),
                                       textColor: Colors.black,
@@ -196,7 +211,7 @@ class _admin_pendingState extends State<admin_pending> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(
-                                        160.0, 10.0, 8.0, 10),
+                                        130.0, 10.0, 8.0, 10),
                                     child: RaisedButton(
                                       onPressed: () {
                                         _cancelledAppointment(
@@ -230,7 +245,9 @@ class _admin_pendingState extends State<admin_pending> {
                     },
                   )
                 : const Center(
-                    child: CircularProgressIndicator(),
+                child: Text(
+                    'No Pending Appointments'
+                )//CircularProgressIndicator(),
                   ),
           ),
         ),
@@ -269,4 +286,28 @@ class _admin_pendingState extends State<admin_pending> {
       appointmentList.remove(appointmentEntity);
     });
   }
+
+  sendNotification(String? emailName) async {
+    final Email email = Email(
+      body:
+      "<h1>Your appointment for vaccination has been CONFIRMED.</h1>\n<p>Thank you for booking."
+          "</p>\n<p>For more information about covid vaccination visit the following link: "
+          "<a>https://www.cdc.gov/vaccines/hcp/vis/index.html</a>"
+          "</p>\n<p>This an auto generated response. Please do no reply to this.Thanks,Your Health team</p>",
+      subject: 'Vaccine Booking Confirmation',
+      recipients: [emailName ?? ""],
+      isHTML: true,
+    );
+
+    await FlutterEmailSender.send(email);
+  }
+
+  // Future<void> sendNotification(String email) async {
+  //   await auth
+  //       .sendPasswordResetEmail(email: email)
+  //       .catchError((e) {
+  //
+  //     Fluttertoast.showToast(msg: e!.message);
+  //   });
+  // }
 }
