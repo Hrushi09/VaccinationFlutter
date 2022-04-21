@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_login_facebook/flutter_login_facebook.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:vaccine_booking/admin_home_screen.dart';
 import 'package:vaccine_booking/signup.dart';
 import 'dart:ui';
 import 'facebookLogin.dart';
@@ -16,24 +17,23 @@ class login extends StatefulWidget {
 }
 
 class _loginState extends State<login> {
-
   final _auth = FirebaseAuth.instance;
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-
-
     final emailField = TextFormField(
+      autofillHints: [AutofillHints.email],
       decoration: InputDecoration(
           border:
-          OutlineInputBorder(borderSide: new BorderSide(color: Colors.red)),
-          labelText: 'Enter Name',
-          hintText: 'Enter Your User Name'),
+              OutlineInputBorder(borderSide: new BorderSide(color: Colors.red)),
+          labelText: 'Enter email',
+          hintText: 'Enter Your User email'),
       autofocus: false,
       controller: emailController,
       keyboardType: TextInputType.emailAddress,
@@ -55,7 +55,7 @@ class _loginState extends State<login> {
     final passwordField = TextFormField(
       decoration: InputDecoration(
         border:
-        OutlineInputBorder(borderSide: new BorderSide(color: Colors.red)),
+            OutlineInputBorder(borderSide: new BorderSide(color: Colors.red)),
         labelText: 'Password',
         hintText: 'Enter Password',
       ),
@@ -85,7 +85,8 @@ class _loginState extends State<login> {
     final loginButton = Material(
       child: MaterialButton(
         onPressed: () {
-          if(_formKey.currentState!.validate()) {
+          _setLoadingState(true);
+          if (_formKey.currentState!.validate()) {
             signIn(emailController.text, passwordController.text);
           }
         },
@@ -101,20 +102,18 @@ class _loginState extends State<login> {
     );
 
     final forgotButton = TextButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/forgot_password');
-        },
-        child: Text(
-          'Forgot Password? Click here',
-          style: TextStyle(
+      onPressed: () {
+        Navigator.pushNamed(context, '/forgot_password');
+      },
+      child: Text(
+        'Forgot Password? Click here',
+        style: TextStyle(
             backgroundColor: Colors.yellow.shade100,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 15),
-        ),
-      );
-
-
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 15),
+      ),
+    );
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -144,15 +143,13 @@ class _loginState extends State<login> {
             },
           ),
           actions: [
-            FlatButton(
-              onPressed: (){
-
-              },
-              child: Icon(
-                Icons.logout,
-                color: Colors.blueGrey.shade100,
-              ),
-            ),
+            // FlatButton(
+            //   onPressed: () {},
+            //   child: Icon(
+            //     Icons.logout,
+            //     color: Colors.blueGrey.shade100,
+            //   ),
+            // ),
           ],
         ),
         body: Container(
@@ -168,7 +165,7 @@ class _loginState extends State<login> {
                     padding: const EdgeInsets.all(15.0),
                     child: Container(
                       height: 150,
-                      width: 150,
+                      width: 130,
                       child: Image(
                         image: AssetImage('images/logo.jpeg'),
                       ),
@@ -192,9 +189,7 @@ class _loginState extends State<login> {
                       child: RaisedButton(
                         color: Colors.transparent,
                         onPressed: () {
-                          final plugin = FacebookLogin(debug: true);
-                          Navigator.push(context, MaterialPageRoute(builder: (Context) =>
-                              facebookLogin(plugin:  plugin,)));
+                          _signInWithFaceBook();
                         },
                         child: Row(
                           children: [
@@ -203,11 +198,12 @@ class _loginState extends State<login> {
                                 padding: const EdgeInsets.only(right: 5.0),
                                 child: SizedBox(
                                     height: 50,
-                                    width: 50,
+                                    width: 35,
                                     child: Padding(
                                       padding: const EdgeInsets.all(4.0),
                                       child: Image(
-                                        image: AssetImage('images/facebook.png'),
+                                        image:
+                                            AssetImage('images/facebook.png'),
                                       ),
                                     )),
                               ),
@@ -251,27 +247,32 @@ class _loginState extends State<login> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: loginButton,
+                    child: isLoading
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : loginButton,
                   ),
                   forgotButton,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('New user?',
-                      style: TextStyle(
-                        fontStyle: FontStyle.italic
+                      Text(
+                        'New user?',
+                        style: TextStyle(fontStyle: FontStyle.italic),
                       ),
-                      ),
-                      TextButton(onPressed: (){
-                        Navigator.pushNamed(context, '/signup');
-                      },
-                          child: Text('Sign Up',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold
-                          ),))
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/signup');
+                          },
+                          child: Text(
+                            'Sign Up',
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontStyle: FontStyle.italic,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ))
                     ],
                   )
                 ],
@@ -283,20 +284,58 @@ class _loginState extends State<login> {
     );
   }
 
-  Future<void> signIn(String email, String password) async {
+  _setLoadingState(bool isShow) {
+    setState(() {
+      isLoading = isShow;
+    });
+  }
 
+  _signInWithFaceBook() async {
+    // Trigger the sign-in flow
+    final LoginResult loginResult = await FacebookAuth.instance.login();
+
+    // Create a credential from the access token
+    final OAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+    // Once signed in, return the UserCredential
+    _auth.signInWithCredential(facebookAuthCredential).then((value) {
+      Fluttertoast.showToast(msg: "Login SuccessFull With FaceBook");
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => const homeScreen()));
+    });
+  }
+
+  Future<void> signIn(String email, String password) async {
     await _auth
         .signInWithEmailAndPassword(email: email, password: password)
         .then((uid) => {
-      Fluttertoast.showToast(msg: "Login SuccessFull"),
-      Navigator.push(context,
-        MaterialPageRoute(builder: (context) => homeScreen()),
-      ),
-    })
+              _setLoadingState(false),
+              if (email == "admin@gmail.com")
+                {
+                  Fluttertoast.showToast(msg: "Admin Login SuccessFull"),
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              const admin_home_screen())),
+                }
+              else
+                {
+                  Fluttertoast.showToast(msg: "Login SuccessFull"),
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              const homeScreen())),
+                }
+            })
         .catchError((e) {
-
+      _setLoadingState(false);
       Fluttertoast.showToast(msg: e!.message);
     });
-
   }
 }
+  
