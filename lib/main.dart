@@ -15,6 +15,7 @@ import 'admin_home_screen.dart';
 import 'admin_pending.dart';
 import 'booking_confirmation.dart';
 import 'display_bookings.dart';
+import 'display_feedback.dart';
 import 'feedback.dart';
 import 'forgot_password.dart';
 import 'hospitals_screen.dart';
@@ -42,9 +43,10 @@ class MyApp extends StatelessWidget {
           '/admin_confirmed': (context) => admin_confirmed(),
           '/admin_pending': (context) => admin_pending(),
           '/admin_cancelled': (context) => admin_cancelled(),
-          //'/feedback': (context) => feedback(),
+          '/feedback': (context) => feedback(),
           '/signup': (context) => signup(),
           '/display_bookings': (context) => display_bookings(),
+          '/display_feedback': (context) => display_feedback(),
           '/user_details': (context) => user_details(),
           '/hospitals_screen': (context) => hospitals_screen(),
           '/admin_home_screen': (context) => admin_home_screen(),
